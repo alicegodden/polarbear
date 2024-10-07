@@ -1,6 +1,9 @@
 # Glacial ice subpopulation of polar bears exhibits divergent transposon activity
 
 All R scripts, notebooks and python scripts and files can be found here:
+/R_scripts:
+Rnotebook_rnaseq.Rmd # All R scripts used for generation and analysis of data/plots
+
 
 
 bearphenogram.py # Plotting a basic phenogram of a list of significantly differentially expressed TEs from Telescope outputs, genome ASM1731132v1
