@@ -197,53 +197,77 @@ rld <- rlog(dds, blind=FALSE)
 plotPCA(rld, intgroup = "group", ntop = 300, returnData = TRUE)
 pcaData <- plotPCA(rld, intgroup=c("group"), returnData=TRUE)
 
-#for looking at two factors with shape and colour for multiple factors
-pcaData <- plotPCA(rld, intgroup=c("group", "age"), returnData=TRUE)
-percentVar <- round(300 * attr(pcaData, "percentVar"))
+# Load required libraries
+library(ggplot2)
+library(DESeq2)  # Assuming 'rld' is your DESeqDataSet
+
+# Assuming you have installed the 'viridis' package
+library(viridis)
+
+# Assuming 'rld' is your DESeqDataSet
+pcaData <- plotPCA(rld, intgroup=c("group", "gender"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+
+# Use viridis color palette
 ggplot(pcaData, aes(PC1, PC2, color=group)) +
-  geom_point(size=4, alpha = 0.5) + # alpha for more transparency use a lower number
-  scale_color_manual(values = c("red", "blue", "orange")) +
+  geom_point(size=4, alpha=0.5) +
+  scale_color_viridis(discrete = TRUE) +  # Use viridis color palette
   scale_shape_manual(values=seq(0,15)) +
-  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) + 
   stat_ellipse() +
   coord_fixed()
 
-#+
-geom_label(aes(label = name))
-
-z <- plotPCA(rld)
-z + geom_label(aes(label = name))
-
-#the PCA's used in this manuscript
-
-rld <- rlog(dds, blind=FALSE)
-plotPCA(rld, intgroup = "group", ntop = 300, returnData = TRUE)
+# Assuming 'rld' is your DESeqDataSet
 pcaData <- plotPCA(rld, intgroup=c("group"), returnData=TRUE)
 percentVar <- round(100 * attr(pcaData, "percentVar"))
 
-
-# pretty
-  p <- ggplot(pcaData, aes(PC1, PC2, color=group)) +
-  geom_point(size=6, alpha = 0.2) +
-  scale_color_manual(values = c("royalblue3", "indianred")) +
-  scale_shape_manual(values=seq(0, 15)) +
-  geom_text(aes(label = name), hjust = 0.5, vjust = 0.5) +
-  stat_ellipse(aes(group = Treatment), type = "norm", level = 0.95) +
+# Use viridis color palette
+ggplot(pcaData, aes(PC1, PC2, color=group)) +
+  geom_point(size=4, alpha=0.5) +
+  scale_color_viridis(discrete = TRUE) +  # Use viridis color palette
+  scale_shape_manual(values=seq(0,15)) +
   xlab(paste0("PC1: ", percentVar[1], "% variance")) +
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
-  theme_bw() + # Set the background to white
-  theme(axis.text.x = element_text(size = 14, face="bold", color="black"),
-        axis.text.y = element_text(size = 14, face="bold", color="black"),
-        axis.title = element_text(size = 14, face="bold", color="black"),
-        legend.title = element_text(size = 14, face="bold", color="black"),
-        legend.text = element_text(size=14, face="bold", color="black"),
-        #panel.grid.major = element_blank(), # Remove grid lines
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) + 
+  stat_ellipse() +
+  coord_fixed()
+
+
+# Use viridis color palette
+ggplot(pcaData, aes(PC1, PC2, color=group)) +
+  geom_point(size=4, alpha=0.5) +
+  #scale_color_manual(values = c("#440154FF", "#22A884FF")) +  # Use viridis color palette
+  scale_color_viridis(discrete = TRUE) +
+  scale_shape_manual(values=seq(0,15)) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) + 
+  #stat_ellipse() +
+  coord_fixed() +
+  theme_bw() +  # Set the background to white
+  theme(axis.text.x = element_text(size = 16, face = "bold"),
+        axis.text.y = element_text(size = 16, face = "bold"),
+        axis.title = element_text(size = 18, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size=16, face = "bold"),
+        
+        #panel.grid.major = element_blank(),  # Remove grid lines
         #panel.grid.minor = element_blank(),
-        axis.line = element_line(), # Add axis lines
-        axis.ticks = element_line()) +   # Add tick marks 
-        theme(plot.title = element_text(face = "bold", hjust = 0.5)) # make title bold
-  p + ggtitle("Ovaries Temperature vs Control PCA")
+        axis.line = element_line(),  # Add axis lines
+        axis.ticks = element_line())  # Add tick marks
+
+
+
+
+# Read the two CSV files
+df1 <- read.csv("Female_SEGvNEG_adult.csv")
+df2 <- read.csv("Male_SEGvNEG_adult.csv")
+
+# Merge based on the common column (assuming it's the first column)
+merged_df <- merge(df1, df2, by = "TE")
+
+# Write the merged data frame to a new CSV file
+write.csv(merged_df, "merged_SEGvNEG_rawcounts_ADULT.csv", row.names = FALSE)
+
 
 
 
@@ -345,79 +369,6 @@ EnhancedVolcano(
 
 
 ```
-
-
-Making a heatmap
-```{r}
-#########################################################
-### B) Reading in data and transform it into matrix format
-#########################################################
-
-data <- read.csv("sig_de_mirnas_40_volcano.csv", comment.char="#")
-rnames <- data[,1]                            # assign labels in column 1 to "rnames"
-mat_data <- data.matrix(data[,2:ncol(data)])  # transform column 2-5 into a matrix
-rownames(mat_data) <- rnames                  # assign row names
-
-head(mat_data)
-#########################################################
-### C) Customizing and plotting the heat map
-#########################################################
-
-# creates a own color palette from red to green
-my_palette <- colorRampPalette(c("red", "yellow", "green"))(n = 299)
-
-# (optional) defines the color breaks manually for a "skewed" color transition
-col_breaks = c(seq(-1,0,length=100),  # for red
-               seq(0.01,0.8,length=100),           # for yellow
-               seq(0.81,1,length=100))             # for green
-
-#usethis::edit_r_environ("project") 
-
-heatmap.2(mat_data,
-          cellnote = mat_data,  # same data set for cell labels
-          main = "Correlation", # heat map title
-          notecol="black",      # change font color of cell labels to black
-          density.info="none",  # turns off density plot inside color legend
-          trace="none",         # turns off trace lines inside the heat map
-          margins =c(12,9),     # widens margins around plot
-          col=my_palette,       # use on color palette defined earlier
-          breaks=col_breaks,    # enable color transition at specified limits
-          dendrogram="row",     # only draw a row dendrogram
-          Colv="NA")            # turn off column clustering
-
-
-```
-
-Making a Venn Diagram
-```{r}
-# Load the ggVennDiagram packages
-library(ggVennDiagram)
-library(viridis)
-
-# Generate example data.
-genes <- paste0("gene", 1:1000)
-set.seed(20210701)
-gene_list <- list(Female_mRNA = sample(genes, 41),
-                  Male_mRNA = sample(genes, 3))
-
-# Construct a Venn object
-venn <- Venn(gene_list)
-data <- process_data(venn, shape_id == "201")
-
-p <-ggplot() +
-  geom_sf(aes(fill = count, alpha = 0.5), data = venn_region(data)) +
-  geom_sf(aes(color = id), data = venn_setedge(data), show.legend = FALSE) +
-  geom_sf_text(aes(label = ifelse(name == "Female_mRNA", "Ovaries miRNAs", ifelse(name == "Male_mRNA", "Testes miRNAs", ""))), size = 5, data = venn_setlabel(data)) +
-  geom_sf_text(aes(label = ifelse(name == "Female_mRNA", "41", ifelse(name == "Male_mRNA", "3", "0"))), size =12, fill = "transparent",  data = venn_region(data)) +
-  
-  theme_void()
-
-#p + scale_color_brewer(palette = "Greys") # change outline
-p + scale_color_brewer(palette = "Greys") +
-    scale_fill_distiller(palette = "BuGn", direction =1) +
-    theme(legend.position = "none") 
-
-
  
 ```
 
