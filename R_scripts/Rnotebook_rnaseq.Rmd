@@ -5,12 +5,6 @@ editor_options:
   chunk_output_type: console
 ---
 
----
-title: "RNA, sRNA and TE differential expression analyses in Zebrafish- DR. Alice Godden"
-output: html_notebook
-editor_options: 
-  chunk_output_type: console
----
 
 
 Load and install required packages
