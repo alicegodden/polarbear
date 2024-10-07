@@ -1,4 +1,11 @@
 ---
+title: "RNA, sRNA and TE differential expression analyses in polar bear- DR. Alice Godden"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+---
 title: "RNA, sRNA and TE differential expression analyses in Zebrafish- DR. Alice Godden"
 output: html_notebook
 editor_options: 
@@ -51,7 +58,7 @@ library(ggpubr)
 Read in your raw counts data
 ```{r}
 #use for rRNA seq and sub in the right file names 
-countData <- read.csv('bear_20_raw_counts.csv')
+countData <- read.csv('BEAR_adult_SEGvNEG.csv')
 head(countData)
 ```
 
@@ -59,16 +66,21 @@ Make your first column, as row names (genes/gene ids etc)
 ```{r}
 #delete first column of row numbers
 
-df = subset(countData, select = -c( 1) )
-rownames(df) <- countData[ , 1]
+#df = subset(countData, select = -c( 1) )
+#rownames(df) <- countData[ , 1]
+#head(df)
+#mode(df) # tells you type of df you have
+rownames(countData) <- countData [,1]  
+head(countData)
+countData = subset(countData, select = -c(1) )
+df=countData
 head(df)
-mode(df) # tells you type of df you have
 ```
 
 Read in the metadata information on your samples. Note that
 the samples need to be in the same order in this sheet, as they do in your countData (raw counts) file.
 ```{r}
-colData <- read.csv('bear_metadata.csv')
+colData <- read.csv('bear_metadata_adult.csv')
 head(colData)
 #make first column of colData into row names
 rownames(colData) <- colData [,1]  
@@ -167,7 +179,7 @@ normalized_counts <- counts(dds, normalized = TRUE)
 write.csv(normalized_counts, file="male_all_telescope_normalised_counts.csv")
 
 
-write.csv(res, file="telescope_LOG_FC_DESEQ2__group_gender_allADULT_rnaseq_results.csv")
+write.csv(res, file="rnaseq_adult_newgenome_deseq2_gender_group.csv")
 ```
 
 Let's make some plots for analyses
@@ -176,6 +188,8 @@ Let's make some plots for analyses
 plotMA(res)
 
 ```
+
+
 
 
 
