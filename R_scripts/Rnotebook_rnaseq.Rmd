@@ -464,12 +464,8 @@ Plotting repeat landscapes from repeatmasker outputs to display Kimura distance
 KimuraDistance <- read.csv("FC_all.divsum.csv",sep=" ")
 
 #add here the genome size in bp
-genomes_size=39199570013
-  # ensembl 1x genome 1373471384
-  # FC merged = 39199570013
-  # FT merged = 40253710347
-  # MC merged = 41736660246
-  # MT merged = 44745217617 
+genomes_size=insertgenomesizeinbp
+
 
 kd_melt = melt(KimuraDistance,id="Div")
 kd_melt$norm = kd_melt$value/genomes_size * 100
