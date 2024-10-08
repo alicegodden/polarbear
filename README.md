@@ -13,3 +13,5 @@ bearphenogram.py # Plotting a basic phenogram of a list of significantly differe
 chrom_end_bear.txt # Chromosome/scaffold legnths text file, genome ASM1731132v1
 
 bear_te_class.py # Plotting bar charts of TEs
+
+autobubble_goplot.py # Plotting bubble plots of GO terms from ShinyGO outputs
