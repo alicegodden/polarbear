@@ -27,7 +27,7 @@ library(ggplot2)
 library(biomaRt)
 library(tidyverse)
 library(org.Dr.eg.db)
-
+library(org.Dr.eg.db)
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("org.Dr.eg.db")
@@ -52,7 +52,7 @@ library(ggpubr)
 Read in your raw counts data
 ```{r}
 #use for rRNA seq and sub in the right file names 
-countData <- read.csv('BEAR_adult_SEGvNEG.csv')
+countData <- read.csv('SF7_Telescope raw_counts_RNAseq_TEs ASM1731132v1.csv')
 head(countData)
 ```
 
@@ -74,7 +74,7 @@ head(df)
 Read in the metadata information on your samples. Note that
 the samples need to be in the same order in this sheet, as they do in your countData (raw counts) file.
 ```{r}
-colData <- read.csv('bear_metadata_adult.csv')
+colData <- read.csv('bear_metadata_adult_temp.csv')
 head(colData)
 #make first column of colData into row names
 rownames(colData) <- colData [,1]  
@@ -83,6 +83,7 @@ colData = subset(colData, select = -c(1) )
 head(colData)
 
 ```
+
 
 ```{r}
 #making sure the row names in colData match column names in df (your countdata)
@@ -112,6 +113,17 @@ dds <- DESeqDataSetFromMatrix(countData=round (df),
 dds <- DESeqDataSetFromMatrix(countData=round (df),
                               colData = colData,
                               design = ~ group + gender + group * gender) 
+
+#assess for interaction between group and gender
+dds <- DESeqDataSetFromMatrix(countData=round (df),
+                              colData = colData,
+                              design = ~ group + gender + group * gender) 
+
+# to examine role of temperature as main effect, control for gender and main effect of group
+dds <- DESeqDataSetFromMatrix(countData=round(df),
+                              colData=colData,
+                              design = ~ gender + mean_temp_when_sampled_in_region_2016
+                              + group)
 
 
 ```
@@ -146,8 +158,15 @@ dds$Gender <-relevel(dds$Gender, ref = "Female")
 #re run to check you have relevelled and the contrasts you have in your results with resultsNames, first variable is the result you are looking at. eg. if it says treatment v control, the differentially expressed genes are resultant of the treatment
 dds <- DESeq (dds)
 resultsNames(dds)
+
+# to get the differential expression results for temperature:
+res_temperature <- results(dds, name="mean_temp_when_sampled_in_region_2016")
+res_temperature_df <- as.data.frame(res_temperature)
+write.csv(res_temperature_df, file="temperature_effect_results_newgen_bear_TelescopeTEs.csv", row.names=TRUE)
+
 #Now generate results 
 res <- results(dds)
+res <- results(dds, name="mean_temp_when_sampled_in_region_2016")
 ```
 
 
@@ -173,7 +192,7 @@ normalized_counts <- counts(dds, normalized = TRUE)
 write.csv(normalized_counts, file="male_all_telescope_normalised_counts.csv")
 
 
-write.csv(res, file="rnaseq_adult_newgenome_deseq2_gender_group.csv")
+write.csv(res, file="rnaseq_adult_newgenome_deseq2_gender_group_Oct24.csv")
 ```
 
 Let's make some plots for analyses
@@ -205,6 +224,7 @@ rld <- rlog(dds, blind=FALSE)
 plotPCA(rld, intgroup = "group", ntop = 300, returnData = TRUE)
 pcaData <- plotPCA(rld, intgroup=c("group"), returnData=TRUE)
 
+pcaData <- plotPCA(rld, intgroup=c( "latitude", "mean_temp_when_sampled_in_region_2016"), returnData=TRUE)
 # Load required libraries
 library(ggplot2)
 library(DESeq2)  # Assuming 'rld' is your DESeqDataSet
@@ -213,11 +233,11 @@ library(DESeq2)  # Assuming 'rld' is your DESeqDataSet
 library(viridis)
 
 # Assuming 'rld' is your DESeqDataSet
-pcaData <- plotPCA(rld, intgroup=c("group", "gender"), returnData=TRUE)
+pcaData <- plotPCA(rld, intgroup=c("group"), returnData=TRUE)
 percentVar <- round(100 * attr(pcaData, "percentVar"))
 
 # Use viridis color palette
-ggplot(pcaData, aes(PC1, PC2, color=group)) +
+ggplot(pcaData, aes(PC1, PC2, color=group, shape=latitude)) +
   geom_point(size=4, alpha=0.5) +
   scale_color_viridis(discrete = TRUE) +  # Use viridis color palette
   scale_shape_manual(values=seq(0,15)) +
@@ -242,7 +262,7 @@ ggplot(pcaData, aes(PC1, PC2, color=group)) +
 
 
 # Use viridis color palette
-ggplot(pcaData, aes(PC1, PC2, color=group)) +
+ggplot(pcaData, aes(PC1, PC2, color=group, shape=latitude)) +
   geom_point(size=4, alpha=0.5) +
   #scale_color_manual(values = c("#440154FF", "#22A884FF")) +  # Use viridis color palette
   scale_color_viridis(discrete = TRUE) +
@@ -263,8 +283,30 @@ ggplot(pcaData, aes(PC1, PC2, color=group)) +
         axis.line = element_line(),  # Add axis lines
         axis.ticks = element_line())  # Add tick marks
 
+# Convert latitude to a factor
+pcaData$mean_temp_when_sampled_in_region_2016 <- as.factor(pcaData$mean_temp_when_sampled_in_region_2016)
 
+pcaData$latitude <- as.factor(pcaData$latitude)
 
+ggplot(pcaData, aes(PC1, PC2, color=mean_temp_when_sampled_in_region_2016, shape=latitude)) +
+  geom_point(size=4, alpha=1) +
+  scale_color_viridis(option = "inferno", discrete = TRUE, begin = 0, end = 0.85) +  # Avoid yellow by restricting end
+  scale_fill_viridis(option = "inferno", discrete = TRUE, begin = 0, end = 0.85) +   # Match fill colors
+  scale_shape_manual(values=seq(0,15)) + 
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) + 
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +  
+  coord_fixed() + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(size = 16, face = "bold"),
+        axis.text.y = element_text(size = 16, face = "bold"),
+        axis.title = element_text(size = 18, face = "bold"),
+        legend.title = element_text(size = 8, face = "bold"),
+        legend.text = element_text(size=16, face = "bold"),
+        axis.line = element_line(),
+        axis.ticks = element_line())
+
+library(ggplot2)
+library(viridis)  # Ensure that the viridis package is loaded
 
 # Read the two CSV files
 df1 <- read.csv("Female_SEGvNEG_adult.csv")
@@ -327,12 +369,27 @@ Making an Enhanced volcano plot
 ```{r}
 
 # assign the results file name to a variable
-deseq_results_file <- 'telescope_volcano.tsv'
+deseq_results_file <- 'temperature_effect_results_newgen_bear_TelescopeTEs_volcano.tsv'
 
 # load data
 deseq_results <-read_tsv(deseq_results_file,
            col_types = cols(Chr = col_character(),
                             Strand = col_character()))
+
+
+head(deseq_results)
+glimpse(deseq_results)
+View(deseq_results)
+
+EnhancedVolcano(
+  deseq_results, # results data frame
+  lab = deseq_results$TE,
+  x = 'log2FoldChange', # column name of log2 fold change
+  y = 'padj' # column name of adjusted pvalue
+)
+
+
+#to add the top 10 most sig de genes by p calue
 
 
 head(deseq_results)
@@ -349,32 +406,35 @@ EnhancedVolcano(
 
 #to add the top 10 most sig de genes by p calue
 genes_to_label <- deseq_results %>%
-  arrange(padj) %>%#change log2fc to padj for by sig p value
-  pull(miRNA) %>%
-  head (30)
+  arrange(log2FoldChange) %>%#change log2fc to padj for by sig p value
+  pull(TE) %>%
+  head (10)
 
-( ?EnhancedVolcano )
+#( ?EnhancedVolcano )
 
 EnhancedVolcano(
-  deseq_results, # results data frame
-  lab = deseq_results$TE,
-  x = 'log2FoldChange', # column name of log2 fold change
-  y = 'padj', # column name of adjusted pvalue
-  col = rocket(6), # Use Viridis color palette with 4 colors
-  pCutoff = 50e-03,
-  FCcutoff = log2(3.0),
-  ylim = c(0, 3.5),
-  xlim = c(-7, 7),
+  deseq_results, 
+  lab = deseq_results$TE,  # Use the new TE_label column for selective labeling
+  x = 'log2FoldChange',  # Column for log2 fold change
+  y = 'padj',  # Column for adjusted p-value
+  col = rocket(6),  # Use rocket color palette
+  pCutoff = 50e-03,  # Set p-value cutoff
+  FCcutoff = log2(1.5),  # Set fold-change cutoff
+  ylim = c(0, 4.5),  
+  xlim = c(-10.5, 10.5),
   min.segment.length = 0.1,
   labFace = "bold",
   labSize = 2.5,
   pointSize = 1.5,
-  drawConnectors = TRUE,
+  drawConnectors = TRUE,  # Draw connectors to labels
   widthConnectors = 0.2,
   title = 'Enhanced Volcano',
-  subtitle = 'RNA-seq Telescope:All adult samples, SEG v NEG'
+  subtitle = 'RNA-seq Telescope: All adult samples, SEG v NEG- Temperature'
 )
 
+
+
+#ASM1731132v1
 
 ```
  
