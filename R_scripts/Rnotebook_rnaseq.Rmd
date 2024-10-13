@@ -432,7 +432,57 @@ EnhancedVolcano(
   subtitle = 'RNA-seq Telescope: All adult samples, SEG v NEG- Temperature'
 )
 
+# label top 5 enriched and downregulated TEs due to overlaps
+# Extract the top 5 most upregulated (highest log2FoldChange)
+# Filter based on the p-value and log2 fold-change cutoffs
+significant_TEs <- deseq_results %>%
+  filter(!is.na(padj), padj < 0.05, abs(log2FoldChange) > log2(1.5))
 
+# Select the top 5 most upregulated TEs
+upregulated_TEs <- significant_TEs %>%
+  arrange(desc(log2FoldChange)) %>%
+  pull(TE) %>%
+  head(70)
+
+# Select the top 5 most downregulated TEs
+downregulated_TEs <- significant_TEs %>%
+  arrange(log2FoldChange) %>%
+  pull(TE) %>%
+  head(10)
+
+# Combine the lists of upregulated and downregulated TEs
+genes_to_label <- c(upregulated_TEs, downregulated_TEs)
+
+# Print to verify the selected TEs
+print(genes_to_label)
+
+# Create a column that labels only the selected TEs
+deseq_results <- deseq_results %>%
+  mutate(TE_label = ifelse(TE %in% genes_to_label, TE, NA))
+
+# Check how many labels are non-NA (should be 10)
+print(sum(!is.na(deseq_results$TE_label)))  # Should return 10
+
+EnhancedVolcano(
+  deseq_results, 
+  lab = deseq_results$TE_label,  # Use TE_label for selective labeling
+  x = 'log2FoldChange',  # Column for log2 fold change
+  y = 'padj',  # Column for adjusted p-value
+  col = rocket(6),  # Use a 4-color palette
+  pCutoff = 0.05,  # p-value cutoff (adjusted p-value)
+  FCcutoff = log2(1.5),  # Fold-change cutoff
+  ylim = c(0, 4.5),  
+  #xlim = c(-10.5, 12.5),
+  min.segment.length = 0.1,
+  labFace = "bold",
+  labSize = 2.5,
+  pointSize = 1.5,
+  drawConnectors = TRUE,  # Draw connectors to labels
+  widthConnectors = 0.2,
+  max.overlaps = Inf,  # Ensure all labels are shown, even if they overlap
+  title = 'Enhanced Volcano',
+  subtitle = 'RNA-seq Telescope: All adult samples, SEG v NEG- Temperature'
+)
 
 #ASM1731132v1
 
