@@ -10,7 +10,15 @@ Rnotebook_rnaseq.Rmd # All R scripts used for generation and analysis of data/pl
 # /Python scripts:
 bearphenogram.py # Plotting a basic phenogram of a list of significantly differentially expressed TEs from Telescope outputs, genome ASM1731132v1
 
+bear_phenogram_TEs_and_genes_overlapping.py # Plotting genes and TEs in a chromosomal plot
+
+bear_phenogram_genes_twolists.py # Plotting two input sets of gene loci in a chromsomal plot
+
 chrom_end_bear.txt # Chromosome/scaffold legnths text file, genome ASM1731132v1
+
+TE_matcher_genes.py # Matching overlapping TEs and genes by loci
+
+bearTEA.py # Used for finding loci of significantly differentially expressed TEs with a list of TEs as input
 
 bear_te_class.py # Plotting bar charts of TEs
 
