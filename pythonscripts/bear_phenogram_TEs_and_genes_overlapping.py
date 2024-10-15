@@ -67,6 +67,14 @@ for _, te_row in points_df.iterrows():
             "Gene_Name": gene_row["Name"]
         })
 
+# Print the names of the overlapping genes
+if overlapping_genes:
+    print("Overlapping Gene Names:")
+    for gene in overlapping_genes:
+        print(f"- {gene['Gene_Name']}")
+else:
+    print("No overlapping genes found.")
+
 # Plot chromosomes with hits and corresponding points
 plt.figure(figsize=(10, 6))
 legend_handles = []
@@ -102,7 +110,7 @@ legend_handles.append(plt.scatter([], [], color='navy', marker='D', label='Overl
 
 plt.xlabel("Genomic Position", fontweight='bold')
 plt.ylabel("Chromosome/Scaffold", fontweight='bold')
-plt.title("Genomic Positions of Significantly Differentially Expressed TEs (Temperature)", fontweight='bold')
+plt.title("Genomic Positions of significantly differentially expressed TEs- Temperature", fontweight='bold')
 plt.yticks(chrom_end_df_filtered["Chromosome"], fontweight='bold', fontsize=8)  # Smaller font size for y-ticks
 plt.xticks(fontweight='bold')
 plt.legend(handles=legend_handles, title="TE Class")
