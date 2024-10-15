@@ -1,3 +1,6 @@
+# Title: Chromosomal plot of TEs and genes
+# Author: Dr. Alice M. Godden
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
