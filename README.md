@@ -27,5 +27,8 @@ autobubble_goplot.py # Plotting bubble plots of GO terms from ShinyGO outputs
 
 # /supplementary_data :
 Contains all supplementary data files for manuscript. These include gene and TE differential expression data and metadata. 
+Also includes GO terms analysis of significantly differentially expressed TEs that overlap genes in the reference genome.
+
+# / Manuscript :
 Diverging transposon activity among polar bear sub-populations inhabiting different climate zones
 bioRxiv 2024.12.04.626794; doi: https://doi.org/10.1101/2024.12.04.626794 
