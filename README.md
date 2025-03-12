@@ -23,3 +23,8 @@ bearTEA.py # Used for finding loci of significantly differentially expressed TEs
 bear_te_class.py # Plotting bar charts of TEs
 
 autobubble_goplot.py # Plotting bubble plots of GO terms from ShinyGO outputs
+
+# /supplementary_data :
+Contains all supplementary data files for manuscript. These include gene and TE differential expression data and metadata. 
+Diverging transposon activity among polar bear sub-populations inhabiting different climate zones
+bioRxiv 2024.12.04.626794; doi: https://doi.org/10.1101/2024.12.04.626794 
