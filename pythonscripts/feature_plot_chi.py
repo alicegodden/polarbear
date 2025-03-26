@@ -94,15 +94,15 @@ for i, te in enumerate(te_types):
 
 # Labels and formatting
 ax.set_xticks(x)
-ax.set_xticklabels(categories, rotation=45, ha="right", fontweight="bold")
-ax.set_ylabel("Count", fontweight="bold")
-ax.set_xlabel("Feature Type", fontweight="bold")
-ax.set_title("TEs overlaping genomic features", fontweight="bold")
-ax.legend(title="TE Family", prop={'weight': 'bold'})
+ax.set_xticklabels(categories, rotation=45, ha="right", fontweight="bold", fontsize=16)
+ax.set_ylabel("Count", fontweight="bold", fontsize=16)
+ax.set_xlabel("Feature Type", fontweight="bold", fontsize=16)
+ax.set_title("TEs overlaping genomic features", fontweight="bold", fontsize=16)
+ax.legend(title="TE Family", title_fontsize=12, prop={'weight': 'bold', 'size':10})
 
 # Make tick labels bold
-plt.xticks(fontweight='bold')
-plt.yticks(fontweight='bold')
+plt.xticks(fontweight='bold', fontsize=16)
+plt.yticks(fontweight='bold', fontsize=16)
 
 # Set log scale for Y-axis
 ax.set_yscale("log")
