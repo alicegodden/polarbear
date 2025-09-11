@@ -4,7 +4,7 @@ All R scripts, notebooks and python scripts and files can be found here:
 
 # /R_scripts:
 Rnotebook_rnaseq.Rmd # All R scripts used for generation and analysis of data/plots
-glm_repeatlandscape.R # GLM modelling of repeat landscape data 
+glmm_repeatlandscape.R # GLMM modelling of repeat landscape data 
 
 
 
