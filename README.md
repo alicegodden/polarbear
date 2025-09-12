@@ -6,7 +6,9 @@ All R scripts, notebooks and python scripts and files can be found here:
 Rnotebook_rnaseq.Rmd # All R scripts used for generation and analysis of data/plots
 glmm_repeatlandscape.R # GLMM modelling of repeat landscape data 
 
+glmm_repeatlandscape.R # Plotting repeatlandscape from RepeatMasker outputs
 
+multibam_summary.R # PCA plotting from multibam summary output
 
 # /Python scripts:
 bearphenogram.py # Plotting a basic phenogram of a list of significantly differentially expressed TEs from Telescope outputs, genome ASM1731132v1
