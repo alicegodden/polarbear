@@ -1,5 +1,8 @@
 # Glacial ice subpopulation of polar bears exhibits divergent transposon activity
 
+RNA-seq pipeline was run according to nf-core rnaseq -r 3.9. Full software versions of all tools in the RNA-seq pipeline can be found here:
+software_versions_nfcore.yml
+
 All R scripts, notebooks and python scripts and files can be found here:
 
 # /R_scripts:
