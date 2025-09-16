@@ -2,6 +2,10 @@
 # Subtitle: Chi-square analysis
 # Author: Dr. Alice M. Godden
 
+# Title: Features bar chart
+# Subtitle: Chi-square analysis
+# Author: Dr. Alice M. Godden
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -13,11 +17,11 @@ sns.set_palette("rocket")
 
 # Data from the table
 data = {
-    "Category": ["CDS", "exon", "gene", "lnc_RNA", "mRNA", "pseudogene", "snRNA", "transcript"],
-    "LTR": [17, 18, 54, 5, 110, 2, 0, 2],
-    "LINE": [724, 855, 600, 93, 1062, 11, 4, 56],
-    "DNA": [4, 9, 59, 12, 155, 0, 0, 1],
-    "SINE": [1, 1, 46, 2, 111, 0, 0, 8]
+    "Category": ["CDS", "exon", "gene", "transcript"],
+    "LTR": [12, 16, 57,117],
+    "LINE": [748, 866, 612,1240],
+    "DNA": [4, 9, 54, 160],
+    "SINE": [0, 0, 44, 126]
 }
 
 # Convert to DataFrame
@@ -75,7 +79,10 @@ colors = sns.color_palette("rocket")
 
 for i, te in enumerate(te_types):
     observed_values = df_filtered[te].values
-    expected = df_filtered.iloc[:, 1:].sum(axis = 0)[te]/df_filtered.iloc[:, 1:].sum().sum()*df_filtered.iloc[:, 1:].sum(axis = 1)
+    # Calculate expected counts for each category
+    expected = df_filtered.iloc[:, 1:].sum(axis=0)[te] / df_filtered.iloc[:, 1:].sum().sum() * df_filtered.iloc[:,
+                                                                                               1:].sum(axis=1)
+
     for j, observed_val in enumerate(observed_values):
         p_val = p_values[te][categories[j]]
         star_label = ""
@@ -89,8 +96,12 @@ for i, te in enumerate(te_types):
         te_color = colors[i]
 
         ax.bar(x[j] + offsets[i], observed_val, width=bar_width, label=te if j == 0 else None, color=te_color)
-        if observed_val > expected[j] and star_label != "":
-            ax.text(x[j] + offsets[i], observed_val + (max(observed_values) / 50), star_label, ha='center', va='bottom', fontsize=15, color='black')
+
+        if star_label != "":
+            # Determine star color: red if enriched, blue if downregulated
+            star_color = "red" if observed_val > expected[j] else "blue"
+            ax.text(x[j] + offsets[i], observed_val + (max(observed_values) / 50), star_label,
+                    ha='center', va='bottom', fontsize=15, color=star_color)
 
 # Labels and formatting
 ax.set_xticks(x)
@@ -105,9 +116,9 @@ plt.xticks(fontweight='bold', fontsize=16)
 plt.yticks(fontweight='bold', fontsize=16)
 
 # Set log scale for Y-axis
-ax.set_yscale("log")
+#ax.set_yscale("log")
 
 # Display main plot
 plt.tight_layout()
-plt.savefig("te_family_counts_pbear25_features_CHISQ.png", dpi=600)
+plt.savefig("te_family_counts_pbear25_features_CHISQ_SEP25.png", dpi=600)
 plt.show()
