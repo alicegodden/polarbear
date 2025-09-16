@@ -67,6 +67,6 @@ Includes the manuscript preprint:
 ## 📑 Citation
 If you use this code or data in your research, please cite:  
 
-> [Authors]. *Diverging transposon activity among polar bear sub-populations inhabiting different climate zones.* bioRxiv 2024.12.04.626794. doi: [10.1101/2024.12.04.626794](https://doi.org/10.1101/2024.12.04.626794)
+> Godden et al., 2024 *Diverging transposon activity among polar bear sub-populations inhabiting different climate zones.* bioRxiv 2024.12.04.626794. doi: [10.1101/2024.12.04.626794](https://doi.org/10.1101/2024.12.04.626794)
 
 ---
