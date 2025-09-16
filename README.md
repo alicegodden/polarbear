@@ -1,44 +1,72 @@
-# Diverging transposon activity among polar bear sub-populations inhabiting different climate zones
+# Diverging Transposon Activity Among Polar Bear Sub-Populations Inhabiting Different Climate Zones
 
+[![DOI](https://img.shields.io/badge/DOI-10.1101/2024.12.04.626794-blue)](https://doi.org/10.1101/2024.12.04.626794)
+[![nf-core/rnaseq](https://img.shields.io/badge/nf--core-rnaseq%203.9-brightgreen)](https://nf-co.re/rnaseq)
+[![Zenodo](https://img.shields.io/badge/Zenodo-10.5281/zenodo.17078251-orange)](https://zenodo.org/record/17078251)
 
-RNA-seq pipeline was run according to nf-core rnaseq -r 3.9. Full software versions of all tools in the RNA-seq pipeline can be found here:
-software_versions_nfcore.yml
+This repository contains code, data, and supplementary materials for the manuscript:  
 
-All R scripts, notebooks and python scripts and files can be found here:
+📄 **Diverging transposon activity among polar bear sub-populations inhabiting different climate zones**  
+*bioRxiv, 2024.12.04.626794*  
+👉 [Read the preprint](https://doi.org/10.1101/2024.12.04.626794)
 
-# /R_scripts:
-Rnotebook_rnaseq.Rmd # All R scripts used for generation and analysis of data/plots
-glmm_repeatlandscape.R # GLMM modelling of repeat landscape data 
+---
 
-glmm_repeatlandscape.R # Plotting repeatlandscape from RepeatMasker outputs
+## 🔬 RNA-seq Pipeline
+The RNA-seq pipeline was run using **[nf-core/rnaseq](https://nf-co.re/rnaseq)** version `3.9`.  
+A complete list of software versions for all tools used in the pipeline is available here:  
+[`software_versions_nfcore.yml`](./software_versions_nfcore.yml)
 
-multibam_summary.R # PCA plotting from multibam summary output
+---
 
-# /Python scripts:
-bearphenogram.py # Plotting a basic phenogram of a list of significantly differentially expressed TEs from Telescope outputs, genome ASM1731132v1
+## 📂 Repository Structure
 
-bear_phenogram_TEs_and_genes_overlapping.py # Plotting genes and TEs in a chromosomal plot
+### `/R_scripts`
+- **`Rnotebook_rnaseq.Rmd`** – All R scripts used for data generation and visualization  
+- **`glmm_repeatlandscape.R`** – GLMM modeling of repeat landscape data  
+- **`repeatlandscape_plots.R`** – Visualization of RepeatMasker outputs  
+- **`multibam_summary.R`** – PCA plotting from MultiBam summary output  
 
-bear_phenogram_genes_twolists.py # Plotting two input sets of gene loci in a chromsomal plot
+---
 
-chrom_end_bear.txt # Chromosome/scaffold legnths text file, genome ASM1731132v1
+### `/Python_scripts`
+- **`bearphenogram.py`** – Plot a basic phenogram of significantly differentially expressed TEs (from Telescope outputs, genome ASM1731132v1)  
+- **`bear_phenogram_TEs_and_genes_overlapping.py`** – Chromosomal plots of overlapping genes and TEs  
+- **`bear_phenogram_genes_twolists.py`** – Chromosomal plots comparing two sets of gene loci  
+- **`chrom_end_bear.txt`** – Chromosome/scaffold lengths (genome ASM1731132v1)  
+- **`TE_matcher_genes.py`** – Match overlapping TEs and genes by genomic loci  
+- **`bearTEA.py`** – Identify loci of significantly differentially expressed TEs given a TE list  
+- **`bear_te_class.py`** – Bar chart visualization of TE classes  
+- **`autobubble_goplot.py`** – Bubble plots of GO terms from ShinyGO outputs  
 
-TE_matcher_genes.py # Matching overlapping TEs and genes by loci
+---
 
-bearTEA.py # Used for finding loci of significantly differentially expressed TEs with a list of TEs as input
+### `/supplementary_data`
+Contains all supplementary data files referenced in the manuscript, including:  
+- Gene and TE differential expression results  
+- Metadata files  
+- GO term analyses for significantly differentially expressed TEs overlapping genes  
 
-bear_te_class.py # Plotting bar charts of TEs
+⚠️ **Note:** *Supplementary File 6* exceeded GitHub’s file size limit.  
+The full dataset can be accessed on Zenodo:  
+[10.5281/zenodo.17078251](https://zenodo.org/record/17078251)  
 
-autobubble_goplot.py # Plotting bubble plots of GO terms from ShinyGO outputs
+- Full file: `Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1.csv`  
+- Cropped version (rows with NA padj removed):  
+  `Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1_cropped.csv`  
 
-# /supplementary_data :
-Contains all supplementary data files for manuscript. These include gene and TE differential expression data and metadata. 
-Also includes GO terms analysis of significantly differentially expressed TEs that overlap genes in the reference genome.
-Suppl. File 6. was over memory limit for file size full file can be found along with other annotation data here: 10.5281/zenodo.17078251 (https://zenodo.org/uploads/17078251) - Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1.csv .
+---
 
+### `/Manuscript`
+Includes the manuscript preprint:  
+📄 **Diverging transposon activity among polar bear sub-populations inhabiting different climate zones**  
+[bioRxiv 2024.12.04.626794](https://doi.org/10.1101/2024.12.04.626794)  
 
-Otherwise please see Suppl File. 6 with NA padj rows removed "cropped" > Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1_cropped.csv
+---
 
-# / Manuscript :
-Diverging transposon activity among polar bear sub-populations inhabiting different climate zones
-bioRxiv 2024.12.04.626794; doi: https://doi.org/10.1101/2024.12.04.626794 
+## 📑 Citation
+If you use this code or data in your research, please cite:  
+
+> [Authors]. *Diverging transposon activity among polar bear sub-populations inhabiting different climate zones.* bioRxiv 2024.12.04.626794. doi: [10.1101/2024.12.04.626794](https://doi.org/10.1101/2024.12.04.626794)
+
+---
