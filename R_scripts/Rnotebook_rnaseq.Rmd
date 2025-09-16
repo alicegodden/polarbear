@@ -5,8 +5,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-
-
 Load and install required packages
 ```{r}
 library(DESeq2)
@@ -52,7 +50,7 @@ library(ggpubr)
 Read in your raw counts data
 ```{r}
 #use for rRNA seq and sub in the right file names 
-countData <- read.csv('SF7_Telescope raw_counts_RNAseq_TEs ASM1731132v1.csv')
+countData <- read.csv('Suppl_File 3_Rawcounts_RNAseq_ASM1731132v1.csv')
 head(countData)
 ```
 
@@ -74,7 +72,7 @@ head(df)
 Read in the metadata information on your samples. Note that
 the samples need to be in the same order in this sheet, as they do in your countData (raw counts) file.
 ```{r}
-colData <- read.csv('bear_metadata_adult_temp.csv')
+colData <- read.csv('Supp. File. 2. bear_metadata_adult.csv')
 head(colData)
 #make first column of colData into row names
 rownames(colData) <- colData [,1]  
@@ -153,7 +151,7 @@ Use resultsNames to find out what conditions (factors) are being examined. Use r
 #step3 run DESeq
 dds <- DESeq (dds)
 resultsNames(dds)
-dds$Gender <-relevel(dds$Gender, ref = "Female")
+dds$gender <-relevel(dds$gender, ref = "Female")
 
 #re run to check you have relevelled and the contrasts you have in your results with resultsNames, first variable is the result you are looking at. eg. if it says treatment v control, the differentially expressed genes are resultant of the treatment
 dds <- DESeq (dds)
@@ -162,7 +160,7 @@ resultsNames(dds)
 # to get the differential expression results for temperature:
 res_temperature <- results(dds, name="mean_temp_when_sampled_in_region_2016")
 res_temperature_df <- as.data.frame(res_temperature)
-write.csv(res_temperature_df, file="temperature_effect_results_newgen_bear_TelescopeTEs.csv", row.names=TRUE)
+write.csv(res_temperature_df, file="temperature_effect_results_newgen_bear_genes.csv", row.names=TRUE)
 
 #Now generate results 
 res <- results(dds)
@@ -215,110 +213,68 @@ pcaExplorer(dds = dds)
 Let's make a PCA plot manually
 ```{r}
 
-nsub=nrow(dds)
-
-#If you have a big dataset use vst as this can be quicker
-rld <- rlog(dds, blind=FALSE)
-
-#for looking at the variance in the top 300 genes on one factor
-plotPCA(rld, intgroup = "group", ntop = 300, returnData = TRUE)
-pcaData <- plotPCA(rld, intgroup=c("group"), returnData=TRUE)
-
-pcaData <- plotPCA(rld, intgroup=c( "latitude", "mean_temp_when_sampled_in_region_2016"), returnData=TRUE)
-# Load required libraries
+# Load libraries
+library(DESeq2)
 library(ggplot2)
-library(DESeq2)  # Assuming 'rld' is your DESeqDataSet
-
-# Assuming you have installed the 'viridis' package
 library(viridis)
 
-# Assuming 'rld' is your DESeqDataSet
-pcaData <- plotPCA(rld, intgroup=c("group"), returnData=TRUE)
-percentVar <- round(100 * attr(pcaData, "percentVar"))
+# Number of samples
+nsub <- nrow(dds)
 
-# Use viridis color palette
-ggplot(pcaData, aes(PC1, PC2, color=group, shape=latitude)) +
-  geom_point(size=4, alpha=0.5) +
-  scale_color_viridis(discrete = TRUE) +  # Use viridis color palette
-  scale_shape_manual(values=seq(0,15)) +
-  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) + 
+# Transform counts for PCA (variance stabilizing)
+rld <- rlog(dds, blind = FALSE)
+
+# ---------------------------
+# PCA for Group + Gender
+# ---------------------------
+pcaData_group_gender <- plotPCA(rld, intgroup = c("group", "gender"), returnData = TRUE)
+percentVar_gg <- round(100 * attr(pcaData_group_gender, "percentVar"))
+
+# Convert factors
+pcaData_group_gender$group <- as.factor(pcaData_group_gender$group)
+pcaData_group_gender$gender <- as.factor(pcaData_group_gender$gender)
+
+# Plot PCA: group (color) vs gender (shape)
+ggplot(pcaData_group_gender, aes(PC1, PC2, color = group, shape = gender)) +
+  geom_point(size = 4, alpha = 0.4) +
+  scale_color_viridis(discrete = TRUE, option = "inferno", begin = 0, end = 0.85) +
+  xlab(paste0("PC1: ", percentVar_gg[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar_gg[2], "% variance")) +
   stat_ellipse() +
-  coord_fixed()
-
-# Assuming 'rld' is your DESeqDataSet
-pcaData <- plotPCA(rld, intgroup=c("group"), returnData=TRUE)
-percentVar <- round(100 * attr(pcaData, "percentVar"))
-
-# Use viridis color palette
-ggplot(pcaData, aes(PC1, PC2, color=group)) +
-  geom_point(size=4, alpha=0.5) +
-  scale_color_viridis(discrete = TRUE) +  # Use viridis color palette
-  scale_shape_manual(values=seq(0,15)) +
-  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) + 
-  stat_ellipse() +
-  coord_fixed()
-
-
-# Use viridis color palette
-ggplot(pcaData, aes(PC1, PC2, color=group, shape=latitude)) +
-  geom_point(size=4, alpha=0.5) +
-  #scale_color_manual(values = c("#440154FF", "#22A884FF")) +  # Use viridis color palette
-  scale_color_viridis(discrete = TRUE) +
-  scale_shape_manual(values=seq(0,15)) +
-  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) + 
-  #stat_ellipse() +
   coord_fixed() +
-  theme_bw() +  # Set the background to white
+  theme_bw() +
   theme(axis.text.x = element_text(size = 16, face = "bold"),
         axis.text.y = element_text(size = 16, face = "bold"),
         axis.title = element_text(size = 18, face = "bold"),
-        legend.title = element_text(size = 18, face = "bold"),
-        legend.text = element_text(size=16, face = "bold"),
-        
-        #panel.grid.major = element_blank(),  # Remove grid lines
-        #panel.grid.minor = element_blank(),
-        axis.line = element_line(),  # Add axis lines
-        axis.ticks = element_line())  # Add tick marks
-
-# Convert latitude to a factor
-pcaData$mean_temp_when_sampled_in_region_2016 <- as.factor(pcaData$mean_temp_when_sampled_in_region_2016)
-
-pcaData$latitude <- as.factor(pcaData$latitude)
-
-ggplot(pcaData, aes(PC1, PC2, color=mean_temp_when_sampled_in_region_2016, shape=latitude)) +
-  geom_point(size=4, alpha=1) +
-  scale_color_viridis(option = "inferno", discrete = TRUE, begin = 0, end = 0.85) +  # Avoid yellow by restricting end
-  scale_fill_viridis(option = "inferno", discrete = TRUE, begin = 0, end = 0.85) +   # Match fill colors
-  scale_shape_manual(values=seq(0,15)) + 
-  xlab(paste0("PC1: ", percentVar[1], "% variance")) + 
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) +  
-  coord_fixed() + 
-  theme_bw() +  
-  theme(axis.text.x = element_text(size = 16, face = "bold"),
-        axis.text.y = element_text(size = 16, face = "bold"),
-        axis.title = element_text(size = 18, face = "bold"),
-        legend.title = element_text(size = 8, face = "bold"),
-        legend.text = element_text(size=16, face = "bold"),
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 12, face = "bold"),
         axis.line = element_line(),
         axis.ticks = element_line())
 
-library(ggplot2)
-library(viridis)  # Ensure that the viridis package is loaded
+# ---------------------------
+# Optional PCA for continuous variables (temperature + latitude)
+# ---------------------------
+pcaData_temp_lat <- plotPCA(rld, intgroup = c("mean_temp_when_sampled_in_region_2016", "latitude"), returnData = TRUE)
+percentVar_tl <- round(100 * attr(pcaData_temp_lat, "percentVar"))
 
-# Read the two CSV files
-df1 <- read.csv("Female_SEGvNEG_adult.csv")
-df2 <- read.csv("Male_SEGvNEG_adult.csv")
+# Convert continuous variables to factors
+pcaData_temp_lat$mean_temp_when_sampled_in_region_2016 <- as.factor(pcaData_temp_lat$mean_temp_when_sampled_in_region_2016)
+pcaData_temp_lat$latitude <- as.factor(pcaData_temp_lat$latitude)
 
-# Merge based on the common column (assuming it's the first column)
-merged_df <- merge(df1, df2, by = "TE")
-
-# Write the merged data frame to a new CSV file
-write.csv(merged_df, "merged_SEGvNEG_rawcounts_ADULT.csv", row.names = FALSE)
-
-
+ggplot(pcaData_temp_lat, aes(PC1, PC2, color = mean_temp_when_sampled_in_region_2016, shape = latitude)) +
+  geom_point(size = 4, alpha = 0.8) +
+  scale_color_viridis(discrete = TRUE, option = "inferno", begin = 0, end = 0.85) +
+  xlab(paste0("PC1: ", percentVar_tl[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar_tl[2], "% variance")) +
+  coord_fixed() +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 16, face = "bold"),
+        axis.text.y = element_text(size = 16, face = "bold"),
+        axis.title = element_text(size = 18, face = "bold"),
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 12, face = "bold"),
+        axis.line = element_line(),
+        axis.ticks = element_line())
 
 
 ```
@@ -369,12 +325,27 @@ Making an Enhanced volcano plot
 ```{r}
 
 # assign the results file name to a variable
-deseq_results_file <- 'temperature_effect_results_newgen_bear_TelescopeTEs_volcano.tsv'
+deseq_results_file <- 'volcano_temp_genes.tsv'
 
 # load data
 deseq_results <-read_tsv(deseq_results_file,
            col_types = cols(Chr = col_character(),
                             Strand = col_character()))
+
+
+head(deseq_results)
+glimpse(deseq_results)
+View(deseq_results)
+
+EnhancedVolcano(
+  deseq_results, # results data frame
+  lab = deseq_results$Gene, # Gene/TE
+  x = 'log2FoldChange', # column name of log2 fold change
+  y = 'padj' # column name of adjusted pvalue
+)
+
+
+#to add the top 10 most sig de genes by p calue
 
 
 head(deseq_results)
@@ -390,31 +361,16 @@ EnhancedVolcano(
 
 
 #to add the top 10 most sig de genes by p calue
-
-
-head(deseq_results)
-glimpse(deseq_results)
-View(deseq_results)
-
-EnhancedVolcano(
-  deseq_results, # results data frame
-  lab = deseq_results$gene,
-  x = 'log2FoldChange', # column name of log2 fold change
-  y = 'padj' # column name of adjusted pvalue
-)
-
-
-#to add the top 10 most sig de genes by p calue
 genes_to_label <- deseq_results %>%
   arrange(log2FoldChange) %>%#change log2fc to padj for by sig p value
-  pull(TE) %>%
+  pull(Gene) %>%
   head (10)
 
 #( ?EnhancedVolcano )
 
 EnhancedVolcano(
   deseq_results, 
-  lab = deseq_results$TE,  # Use the new TE_label column for selective labeling
+  lab = deseq_results$Gene,  # Use the new TE_label column for selective labeling
   x = 'log2FoldChange',  # Column for log2 fold change
   y = 'padj',  # Column for adjusted p-value
   col = rocket(6),  # Use rocket color palette
@@ -429,7 +385,7 @@ EnhancedVolcano(
   drawConnectors = TRUE,  # Draw connectors to labels
   widthConnectors = 0.2,
   title = 'Enhanced Volcano',
-  subtitle = 'RNA-seq Telescope: All adult samples, SEG v NEG- Temperature'
+  subtitle = 'RNA-seq Genes: All adult samples, SEG v NEG- Temperature'
 )
 
 # label top 5 enriched and downregulated TEs due to overlaps
