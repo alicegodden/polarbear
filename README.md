@@ -1,4 +1,5 @@
-# Glacial ice subpopulation of polar bears exhibits divergent transposon activity
+# Diverging transposon activity among polar bear sub-populations inhabiting different climate zones
+
 
 RNA-seq pipeline was run according to nf-core rnaseq -r 3.9. Full software versions of all tools in the RNA-seq pipeline can be found here:
 software_versions_nfcore.yml
@@ -33,7 +34,7 @@ autobubble_goplot.py # Plotting bubble plots of GO terms from ShinyGO outputs
 # /supplementary_data :
 Contains all supplementary data files for manuscript. These include gene and TE differential expression data and metadata. 
 Also includes GO terms analysis of significantly differentially expressed TEs that overlap genes in the reference genome.
-Suppl. File 6. was over memory limit for file size full file can be found along with other annotation data here: 10.5281/zenodo.17078251 - Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1.csv .
+Suppl. File 6. was over memory limit for file size full file can be found along with other annotation data here: 10.5281/zenodo.17078251 (https://zenodo.org/uploads/17078251) - Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1.csv .
 
 
 Otherwise please see Suppl File. 6 with NA padj rows removed "cropped" > Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1_cropped.csv
