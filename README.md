@@ -51,9 +51,9 @@ Contains all supplementary data files referenced in the manuscript, including:
 The full dataset can be accessed on Zenodo:  
 [10.5281/zenodo.17078251](https://zenodo.org/record/17078251)  
 
-- Full file: `Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1.csv`  
+- Full file: `Suppl.File4-TelescopeDESeq2dataRNA-seqASM1731132v1.csv`  
 - Cropped version (rows with NA padj removed):  
-  `Suppl.File6-TelescopeDESeq2dataRNA-seqASM1731132v1_cropped.csv`  
+  `Suppl.File4-TelescopeDESeq2dataRNA-seqASM1731132v1_cropped.csv`  
 
 ---
 
