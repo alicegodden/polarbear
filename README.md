@@ -47,7 +47,7 @@ Contains all supplementary data files referenced in the manuscript, including:
 - Metadata files  
 - GO term analyses for significantly differentially expressed TEs overlapping genes  
 
-⚠️ **Note:** *Supplementary File 6* exceeded GitHub’s file size limit.  
+⚠️ **Note:** *Supplementary File 4* exceeded GitHub’s file size limit.  
 The full dataset can be accessed on Zenodo:  
 [10.5281/zenodo.17078251](https://zenodo.org/record/17078251)  
 
