@@ -7,8 +7,8 @@
 This repository contains code, data, and supplementary materials for the manuscript:  
 
 📄 **Diverging transposon activity among polar bear sub-populations inhabiting different climate zones**  
-*bioRxiv, 2024.12.04.626794*  
-👉 [Read the preprint](https://doi.org/10.1101/2024.12.04.626794)
+*Godden, A.M., Rix, B.T. & Immler, S. Diverging transposon activity among polar bear sub-populations inhabiting different climate zones. Mobile DNA 16, 47 (2025). https://doi.org/10.1186/s13100-025-00387-4*  
+👉 [Read the paper]([https://doi.org/10.1101/2024.12.04.626794](https://link.springer.com/article/10.1186/s13100-025-00387-4))
 
 ---
 
