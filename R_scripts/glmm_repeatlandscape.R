@@ -3,7 +3,7 @@
 # Author: Dr. Alice M. Godden
 
 # Title: Plotting repeat landscape from RepeatMasker divsum files
-# Author: Gemini, based on Dr. Alice M. Godden's original script
+
 
 # Load necessary libraries
 # This script requires ggplot2, dplyr, readr, tidyr, and ggsci
